@@ -38,7 +38,7 @@ The signal chain is a simple stimulus → measure → process pipeline:
 2. **Measurement** — The `AD8302` gain/phase detector compares the DUT's output against the input and outputs two calibrated DC voltages: `VMAG` (30mV/dB) and `VPHS` (10mV/°).
 3. **Processing** — The `STM32H750` reads both channels through its 12-bit ADC with 64× oversampling, converts the readings to dB/° (0.027dB/LSB), and updates the display and log in real time.
 
-![Signal Chain Diagram](diagrams/signal_chain_v2.png)
+![Signal Chain Diagram](signal_chain_v2.png)
 
 ## 📊 System Specifications
 
@@ -75,7 +75,7 @@ Two regulated rails are derived from the USB-C +5V input:
 - **TLV75518 → 1.8V analog** — powers the AD9913 and AD8302
 - A ferrite bead isolates the analog supply (VDDA) for a clean ADC reference, with separate ground pour planes and a star-point GND to keep digital switching noise off the analog rail
 
-![Power Architecture Diagram](diagrams/power_architecture.png)
+![Power Architecture Diagram](power_architecture.png)
 
 ## 💰 Cost Breakdown (single unit, approx.)
 
