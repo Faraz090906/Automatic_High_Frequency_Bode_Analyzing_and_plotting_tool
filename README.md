@@ -4,33 +4,33 @@
 
 ![Bode Plotter PCB](pcb.png)
 
-[![Frequency Range](https://img.shields.io/badge/Frequency-10mHz--100MHz-blue)]()
-[![Magnitude](https://img.shields.io/badge/Magnitude-±30dB-green)]()
-[![Phase](https://img.shields.io/badge/Phase-±1°-orange)]()
-[![PCB](https://img.shields.io/badge/PCB-4--layer-lightgrey)]()
-[![License](https://img.shields.io/badge/License-Unspecified-red)]()
+![Frequency: 10mHz–100MHz](https://img.shields.io/badge/Frequency-10mHz--100MHz-blue)
+![Magnitude: ±30dB](https://img.shields.io/badge/Magnitude-±30dB-green)
+![Phase: ±1°](https://img.shields.io/badge/Phase-±1°-orange)
+![PCB: 4-layer](https://img.shields.io/badge/PCB-4--layer-lightgrey)
+![Cost: ~₹8k](https://img.shields.io/badge/Cost-~₹8k-9cf)
 
 ---
 
-## Overview
+## 🔎 Overview
 
 Frequency response analysis usually means choosing between a lab-grade VNA (₹20k–₹2L), a bench scope + signal generator setup (slow and manual), or a PC-tethered NanoVNA. **AHFBAAPT** is a self-contained alternative: a hand-solderable, USB-C powered PCB that sweeps a signal through a device under test (DUT), measures magnitude and phase in real time, displays the result on an onboard touchscreen, and logs everything to a microSD card as CSV — with no computer required.
 
 It's aimed at embedded engineers doing hardware bring-up, university labs teaching signals/RF courses, and hobbyists characterizing filters, inductors, and antenna matching networks.
 
-## Key Features
+## ✨ Key Features
 
-- **Wide sweep range** — 10mHz to 100MHz, with 0.058Hz frequency resolution (32-bit tuning word)
-- **Accurate measurement** — ±30dB magnitude (±0.5dB accuracy) and 0°–180° phase (±1° accuracy)
-- **Up to 4096 log-spaced sweep points** per run
-- **Standalone operation** — no PC or companion software needed
-- **2.4" touchscreen TFT** for real-time plotting and read-off of frequency/gain/phase at any point
-- **microSD logging** — sweep results exported as CSV
-- **USB-C powered** (~300mA) and **USB-C data** for streaming/firmware updates
-- **Open firmware** — full STM32 HAL access, easily extended (e.g., custom sweep profiles, Wi-Fi, USB streaming)
-- **Hand-solderable** 4-layer PCB build
+- 📡 **Wide sweep range** — 10mHz to 100MHz, with 0.058Hz frequency resolution (32-bit tuning word)
+- 🎯 **Accurate measurement** — ±30dB magnitude (±0.5dB accuracy) and 0°–180° phase (±1° accuracy)
+- 🔢 **Up to 4096 log-spaced sweep points** per run
+- 🔌 **Standalone operation** — no PC or companion software needed
+- 🖥️ **2.4" touchscreen TFT** for real-time plotting and read-off of frequency/gain/phase at any point
+- 💾 **microSD logging** — sweep results exported as CSV
+- ⚡ **USB-C powered** (~300mA) and **USB-C data** for streaming/firmware updates
+- 🛠️ **Open firmware** — full STM32 HAL access, easily extended (custom sweep profiles, Wi-Fi, USB streaming)
+- 🧩 **Hand-solderable** 4-layer PCB build
 
-## How It Works
+## ⚙️ How It Works
 
 The signal chain is a simple stimulus → measure → process pipeline:
 
@@ -38,14 +38,9 @@ The signal chain is a simple stimulus → measure → process pipeline:
 2. **Measurement** — The `AD8302` gain/phase detector compares the DUT's output against the input and outputs two calibrated DC voltages: `VMAG` (30mV/dB) and `VPHS` (10mV/°).
 3. **Processing** — The `STM32H750` reads both channels through its 12-bit ADC with 64× oversampling, converts the readings to dB/° (0.027dB/LSB), and updates the display and log in real time.
 
-```
-DUT (via SMA) ──▶ OPA683 (I/V + LPF, fc=72MHz) ──▶ AD8302 (Gain/Phase) ──▶ STM32H750 ADC
-      ▲                                                                        │
-      │                                                                        ▼
-AD9913 DDS (250MSPS) ◀──────────────── SPI sweep config ──────────── 2.4" TFT + microSD (CSV)
-```
+![Signal Chain Diagram](diagrams/signal_chain_v2.png)
 
-## System Specifications
+## 📊 System Specifications
 
 | Parameter | Value |
 |---|---|
@@ -63,7 +58,7 @@ AD9913 DDS (250MSPS) ◀──────────────── SPI swe
 | Power | USB-C +5V, ~300mA |
 | PCB | 4-layer, hand-solderable |
 
-## Key Components
+## 🧠 Key Components
 
 | Chip | Role | Highlights |
 |---|---|---|
@@ -72,15 +67,17 @@ AD9913 DDS (250MSPS) ◀──────────────── SPI swe
 | **OPA683ID** | High-Speed Op-Amp | I/V conversion (TIA), 72MHz low-pass filter, 50Ω output conditioning |
 | **STM32H750VBT6** | MCU | 480MHz Cortex-M7, 12-bit ADC (64× oversample), 4× SPI (DDS/TFT/SD/touch), USB-C |
 
-### Power Architecture
+## 🔋 Power Architecture
 
 Two regulated rails are derived from the USB-C +5V input:
 
 - **TLV75533 → 3.3V digital** — powers the STM32, TFT, SD card, and USB
 - **TLV75518 → 1.8V analog** — powers the AD9913 and AD8302
-- A ferrite bead isolates the analog supply (VDDA) for a clean ADC reference, with separate ground pour planes and a star-point GND to keep digital switching noise off the analog rail.
+- A ferrite bead isolates the analog supply (VDDA) for a clean ADC reference, with separate ground pour planes and a star-point GND to keep digital switching noise off the analog rail
 
-## Cost Breakdown (single unit, approx.)
+![Power Architecture Diagram](diagrams/power_architecture.png)
+
+## 💰 Cost Breakdown (single unit, approx.)
 
 | Item | Cost (₹) |
 |---|---|
@@ -95,12 +92,15 @@ Two regulated rails are derived from the USB-C +5V input:
 
 For comparison, a comparable lab-grade VNA costs ₹20,000 – ₹13,00,000.
 
-## Repository Contents
+## 📁 Repository Contents
 
 ```
 .
 ├── README.md                     # This file
 ├── pcb.png                       # Rendered/photographed PCB
+├── diagrams/                     # Illustrative diagrams used in this README
+│   ├── signal_chain_v2.png
+│   └── power_architecture.png
 ├── pitch.pdf                     # Project pitch deck (problem, use cases, USPs, roadmap)
 ├── Report.pdf                    # One-page technical summary / spec sheet
 ├── Schematic.pdf                 # Exported schematic
@@ -118,7 +118,7 @@ For comparison, a comparable lab-grade VNA costs ₹20,000 – ₹13,00,000.
 
 > **Note:** The hardware design lives entirely in [Altium Designer](https://www.altium.com/) project files (`.PrjPcb`, `.SchDoc`, `.PcbDoc`). You'll need Altium Designer (or Altium 365 viewer) to open and edit them.
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Viewing the Design
 1. Download and extract `bode_plotter_project.zip`.
@@ -136,23 +136,23 @@ For comparison, a comparable lab-grade VNA costs ₹20,000 – ₹13,00,000.
 3. Configure the sweep (start/stop frequency, number of points) via the touchscreen.
 4. View magnitude/phase in real time on the 2.4" TFT, and optionally log results to microSD as CSV.
 
-## Who Is This For?
+## 👥 Who Is This For?
 
 - **Embedded engineers** — test filters and amplifiers during hardware bring-up without leaving the bench
 - **University labs** — an affordable, student-buildable teaching tool for signals/RF courses
 - **RF hobbyists** — characterize hand-wound inductors, ceramic filters, and antenna matching networks
 
-## Roadmap
+## 🗺️ Roadmap
 
 - **Rev 1.0 (current)** — AD9913 + AD8302 + STM32H750, 2.4" TFT, SD card, USB-C. 10mHz–100MHz, ±30dB, ±1°. ~₹8k all-in.
 - **Rev 2.0 (near term)** — Full DUT analysis, extend frequency range up to 1GHz, extend gain range to ±50–60dB. Each revision aims to remain hand-solderable and under ₹10,000 built.
 
-## Authors
+## 🧑‍💻 Authors
 
 - Akshara Sarma Chennubhatla — EE24BTECH11003
 - Patnam Shariq Faraz Muhammed — EE24BTECH11049
 - Siddhanth Yellanki — EE24BTECH11059
 
-## License
+## 📜 License
 
 No license file is currently included in this repository. If you intend to reuse or build on this design, please reach out to the authors to clarify usage terms.
